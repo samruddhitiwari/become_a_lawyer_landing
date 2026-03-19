@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 
 // ─── SUPABASE CONFIG ──────────────────────────────────────────────────────────
 // Replace these with your actual Supabase project values
-const SUPABASE_URL = "https://zxbrdxulriozaqggelrs.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4YnJkeHVscmlvemFxZ2dlbHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MzgwNTYsImV4cCI6MjA4OTUxNDA1Nn0.FijPssPN-n-_b4rIM9uN6l0EDWS82o8WVUV2u-5H4oM";
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
 async function insertWaitlistEntry(data) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
@@ -216,6 +216,13 @@ export default function LandingPage() {
         @keyframes pulse    { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
         @keyframes rotateSlow { from{transform:rotate(0);} to{transform:rotate(360deg);} }
         @keyframes successStamp { 0%{transform:scale(3) rotate(-20deg);opacity:0;} 50%{transform:scale(0.92) rotate(-5deg);opacity:1;} 70%{transform:scale(1.04) rotate(-3deg);} 100%{transform:scale(1) rotate(-3deg);opacity:1;} }
+        @keyframes gavelDrop   { 0%{transform:rotate(-55deg) translate(-10px,-20px);opacity:0;} 60%{transform:rotate(8deg) translate(0,0);opacity:1;} 75%{transform:rotate(-4deg);} 90%{transform:rotate(3deg);} 100%{transform:rotate(0deg);opacity:1;} }
+        @keyframes ripple      { 0%{transform:scale(0);opacity:0.6;} 100%{transform:scale(4);opacity:0;} }
+        @keyframes confettiFall{ 0%{transform:translateY(-20px) rotate(0deg);opacity:1;} 100%{transform:translateY(120px) rotate(720deg);opacity:0;} }
+        @keyframes lineGrow    { from{width:0;} to{width:100%;} }
+        @keyframes shakeX      { 0%,100%{transform:translateX(0) rotate(-2deg);} 20%{transform:translateX(-8px) rotate(-4deg);} 40%{transform:translateX(8px) rotate(0deg);} 60%{transform:translateX(-6px) rotate(-3deg);} 80%{transform:translateX(6px) rotate(-1deg);} }
+        @keyframes errorFlash  { 0%,100%{background:rgba(139,26,26,0.08);} 50%{background:rgba(139,26,26,0.18);} }
+        @keyframes slideUpFade { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
 
         .inp-field {
           background: rgba(240,232,208,0.05);
@@ -568,21 +575,79 @@ export default function LandingPage() {
 
         {status === "success" ? (
           // ── SUCCESS STATE ──
-          <div data-reveal="success" {...{}} style={{ textAlign: "center", padding: "60px 40px", background: "rgba(180,150,80,0.04)", border: `1px solid rgba(180,150,80,0.2)`, borderRadius: 3, ...revealStyle("success") }}>
-            <div style={{ fontSize: 48, marginBottom: 20 }}>⚖</div>
-            <div style={{ position: "relative", display: "inline-block", marginBottom: 28 }}>
-              <div style={{ fontFamily: F.display, fontSize: "clamp(28px,5vw,52px)", fontWeight: 900, color: C.parchment, lineHeight: 1.1 }}>
-                Your testimony<br />has been recorded.
+          <div style={{ position: "relative", overflow: "hidden", borderRadius: 3 }}>
+
+            {/* Confetti particles */}
+            {[...Array(22)].map((_, i) => {
+              const colors = ["#b49650","#d4b870","#f5f0e0","#7a5a30","#e8dfc0","#c9a84c"];
+              const size   = 4 + Math.random() * 7;
+              const left   = 5 + Math.random() * 90;
+              const delay  = Math.random() * 0.8;
+              const dur    = 1.2 + Math.random() * 1.2;
+              const shape  = i % 3 === 0 ? "50%" : i % 3 === 1 ? "2px" : "0%";
+              return (
+                <div key={i} style={{
+                  position: "absolute", top: 0, left: `${left}%`,
+                  width: size, height: size,
+                  borderRadius: shape,
+                  background: colors[i % colors.length],
+                  animation: `confettiFall ${dur}s ease ${delay}s both`,
+                  zIndex: 10, pointerEvents: "none",
+                }} />
+              );
+            })}
+
+            <div style={{ textAlign: "center", padding: "64px 40px 56px", background: "rgba(180,150,80,0.05)", border: `1px solid rgba(180,150,80,0.25)`, borderRadius: 3, position: "relative" }}>
+
+              {/* Gavel */}
+              <div style={{ fontSize: 56, marginBottom: 8, display: "inline-block", animation: "gavelDrop 0.7s cubic-bezier(0.22,1,0.36,1) 0.1s both", transformOrigin: "bottom right" }}>
+                🔨
               </div>
-              <div style={{ fontFamily: F.mono, fontSize: 12, fontWeight: 700, color: "#1a5a1a", border: "2px solid #1a5a1a", padding: "4px 10px", borderRadius: 2, transform: "rotate(-3deg)", display: "inline-block", marginTop: 16, animation: "successStamp 0.7s ease both", letterSpacing: "0.1em" }}>
-                ADMITTED TO RECORD
+
+              {/* Ripple behind gavel */}
+              <div style={{ position: "absolute", top: "28%", left: "50%", transform: "translateX(-50%)", width: 60, height: 60, borderRadius: "50%", border: `2px solid rgba(180,150,80,0.4)`, animation: "ripple 1s ease 0.5s both" }} />
+              <div style={{ position: "absolute", top: "28%", left: "50%", transform: "translateX(-50%)", width: 60, height: 60, borderRadius: "50%", border: `2px solid rgba(180,150,80,0.25)`, animation: "ripple 1s ease 0.75s both" }} />
+
+              {/* ADMITTED stamp */}
+              <div style={{ marginBottom: 28, marginTop: 4 }}>
+                <div style={{
+                  display: "inline-block",
+                  fontFamily: F.mono, fontSize: "clamp(18px,4vw,32px)", fontWeight: 700,
+                  color: "#1a5a1a", border: "3px solid #1a5a1a",
+                  padding: "8px 24px", borderRadius: 3,
+                  transform: "rotate(-3deg)",
+                  animation: "successStamp 0.65s cubic-bezier(0.22,1,0.36,1) 0.55s both",
+                  letterSpacing: "0.12em",
+                  boxShadow: "inset 0 0 0 1px rgba(26,90,26,0.15)",
+                  textShadow: "0 1px 0 rgba(0,0,0,0.2)",
+                }}>
+                  ADMITTED TO RECORD
+                </div>
               </div>
-            </div>
-            <p style={{ fontFamily: F.fell, fontStyle: "italic", color: C.dim, fontSize: 14, lineHeight: 1.85, maxWidth: 420, margin: "0 auto 28px" }}>
-              You'll be among the first through the courtroom doors. We'll be in touch when the trial begins.
-            </p>
-            <div style={{ fontFamily: F.mono, fontSize: 10, color: C.dimmer, letterSpacing: "0.1em" }}>
-              — THE BENCH
+
+              {/* Animated divider line */}
+              <div style={{ height: 1, background: "rgba(180,150,80,0.3)", margin: "0 auto 28px", animation: "lineGrow 0.8s ease 1s both", width: "60%" }} />
+
+              <div style={{ animation: "slideUpFade 0.6s ease 1.1s both" }}>
+                <h3 style={{ fontFamily: F.display, fontSize: "clamp(20px,4vw,36px)", fontWeight: 900, color: C.parchment, lineHeight: 1.15, marginBottom: 16 }}>
+                  Your testimony<br />has been recorded.
+                </h3>
+                <p style={{ fontFamily: F.fell, fontStyle: "italic", color: C.dim, fontSize: 14, lineHeight: 1.9, maxWidth: 400, margin: "0 auto 28px" }}>
+                  You'll be among the first through the courtroom doors when the trial begins. The bench will be in touch.
+                </p>
+
+                {/* Details row */}
+                <div style={{ display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap", marginBottom: 24 }}>
+                  {[["Priority Access","Guaranteed"],["Launch Notification","Via Email"],["Your Case","On Record"]].map(([l,v])=>(
+                    <div key={l} style={{ textAlign: "center" }}>
+                      <div style={{ fontFamily: F.mono, fontSize: 9, color: C.dimmer, letterSpacing: "0.12em", marginBottom: 3 }}>{l}</div>
+                      <div style={{ fontFamily: F.display, fontSize: 13, color: C.gold, fontWeight: 700 }}>{v}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ fontFamily: F.mono, fontSize: 10, color: C.dimmer, letterSpacing: "0.1em" }}>— THE BENCH</div>
+              </div>
             </div>
           </div>
         ) : (
@@ -668,8 +733,42 @@ export default function LandingPage() {
 
               {/* Submit */}
               {status === "error" && (
-                <div style={{ background: "rgba(139,26,26,0.1)", border: "1px solid rgba(139,26,26,0.3)", borderRadius: 2, padding: "10px 14px", marginBottom: 16, fontFamily: F.fell, fontSize: 13, color: "#f87171" }}>
-                  {errorMsg || "Something went wrong. Please try again."}
+                <div style={{
+                  marginBottom: 18,
+                  border: "1px solid rgba(139,26,26,0.45)",
+                  borderRadius: 3,
+                  overflow: "hidden",
+                  animation: "shakeX 0.5s ease both, errorFlash 1.5s ease 0.5s 2",
+                }}>
+                  {/* Red stamp bar */}
+                  <div style={{ background: "rgba(139,26,26,0.18)", borderBottom: "1px solid rgba(139,26,26,0.3)", padding: "8px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{
+                      fontFamily: F.mono, fontSize: 10, fontWeight: 700,
+                      color: "#c0504a", border: "2px solid #c0504a",
+                      padding: "2px 8px", borderRadius: 2,
+                      letterSpacing: "0.12em", transform: "rotate(-2deg)",
+                      display: "inline-block", flexShrink: 0,
+                    }}>
+                      OBJECTION
+                    </div>
+                    <div style={{ fontFamily: F.mono, fontSize: 9, color: "rgba(192,80,74,0.7)", letterSpacing: "0.08em" }}>
+                      THE COURT CANNOT PROCESS THIS SUBMISSION
+                    </div>
+                  </div>
+                  <div style={{ padding: "12px 16px", background: "rgba(139,26,26,0.06)" }}>
+                    <p style={{ fontFamily: F.fell, fontSize: 13, color: "#f87171", lineHeight: 1.65, fontStyle: "italic" }}>
+                      {errorMsg.includes("already") ? (
+                        <>This email address is already entered in evidence. The court has your details — you'll be notified at launch.</>
+                      ) : (
+                        <>{errorMsg || "The submission could not be processed. Please check your details and try again."}</>
+                      )}
+                    </p>
+                    {!errorMsg.includes("already") && (
+                      <button onClick={() => setStatus("idle")} style={{ marginTop: 8, background: "none", border: "none", fontFamily: F.mono, fontSize: 10, color: "rgba(192,80,74,0.7)", cursor: "pointer", letterSpacing: "0.08em", textDecoration: "underline", padding: 0 }}>
+                        TRY AGAIN →
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
 
