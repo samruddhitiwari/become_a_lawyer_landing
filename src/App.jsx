@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 
 // ─── SUPABASE CONFIG ──────────────────────────────────────────────────────────
 // Replace these with your actual Supabase project values
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://zxbrdxulriozaqggelrs.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4YnJkeHVscmlvemFxZ2dlbHJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MzgwNTYsImV4cCI6MjA4OTUxNDA1Nn0.FijPssPN-n-_b4rIM9uN6l0EDWS82o8WVUV2u-5H4oM";
 
 async function insertWaitlistEntry(data) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
